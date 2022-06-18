@@ -12,23 +12,23 @@ const crearUsuario = async (req, res = response) => {
         if (existeEmail) {
             return res.status(400).json({
                 ok: false,
-                message: 'el correo esta registrado'
+                msg: 'el correo esta registrado'
             })
         }
-        usuarioadd = await new Usuario(req.body);
+        usuario = await new Usuario(req.body);
         //encriptar contraseña 
         const salt = bcrypt.genSaltSync();
-        usuarioadd.password = bcrypt.hashSync(password, salt);
-        await usuarioadd.save();
+        usuario.password = bcrypt.hashSync(password, salt);
+        await usuario.save();
         //General JsonWEbToken
-        const token = await generarJWT(usuarioadd.id);
+        const token = await generarJWT(usuario.id);
         res.json({
             ok: true,
-            usuarioadd,
+            usuario,
             token
         })
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).json({
 
             ok: false,
@@ -40,7 +40,7 @@ const crearUsuario = async (req, res = response) => {
 // {ok true}
 const login = async (req, res = response) => {
     const { email, password } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     try {
         const usuarioDB = await Usuario.findOne({ email });
 
@@ -64,7 +64,7 @@ const login = async (req, res = response) => {
             token
         });
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(500).json({
             ok: false,
             msg: 'hable con el admin'
